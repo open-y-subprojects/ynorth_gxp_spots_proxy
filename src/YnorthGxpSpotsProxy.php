@@ -11,7 +11,7 @@ use Psr\Log\LoggerInterface;
  */
 class YnorthGxpSpotsProxy {
 
-  const GXP_END_POINT = 'https://www.groupexpro.com/schedule/embed/json.php';
+  const GXP_ENDPOINT = 'https://www.groupexpro.com/schedule/embed/json.php';
   const CACHE_NAME = 'ynorth_gxp_spots_proxy_week';
 
   /**
