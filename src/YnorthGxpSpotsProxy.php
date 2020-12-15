@@ -188,7 +188,7 @@ class YnorthGxpSpotsProxy {
       'end' => $endTime,
     ];
     $queryStr = http_build_query($queryParams);
-    $url = self::GXP_END_POINT . '?' . $queryStr;
+    $url = self::GXP_ENDPOINT . '?' . $queryStr;
 
     $response = $this->client->get($url);
     $body = $response->getBody();
