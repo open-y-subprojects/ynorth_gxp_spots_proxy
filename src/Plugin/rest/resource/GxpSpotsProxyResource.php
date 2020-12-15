@@ -20,6 +20,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  *     "https://www.drupal.org/link-relations/create" = "/api/ynorth-gxp-spots-proxy"
  *   }
  * )
+ *
+ * @deprecated in ynorth_gxp_spots_proxy:1.1.0 and is removed from ynorth_gxp_spots_proxy:1.2.0.
+ * Use \Drupal\ynorth_gxp_spots_proxy\YnorthGxpSpotsProxy::getWeekData().
  */
 class GxpSpotsProxyResource extends ResourceBase {
 
@@ -131,7 +134,7 @@ class GxpSpotsProxyResource extends ResourceBase {
     $jsonp = str_replace("\'", "'", $jsonp);
     $json = json_decode($jsonp, TRUE);
     if (empty($json)) {
-      // TODO Log this case. If $json empty that meens we have bad data from groupex.
+      // @todo Log this case. If $json empty that meens we have bad data from groupex.
       $response = new JsonResponse([], 200);
       return $response;
     }
@@ -139,7 +142,7 @@ class GxpSpotsProxyResource extends ResourceBase {
     $data = [];
     foreach ($gxpData as $schedule) {
       // Variable $schedule[9] must be have html content like this:
-      // <a data-date="11/20/2020" class="descGXP" alt="11938371" href= "javascript://"11938371">Description</a><br><a class="signUpGXP" textmsg="10 SPOTS LEFT" alt="11938371" href="https://www.groupexpro.com/gxp/reservations/start/index/11938371/11/20/2020">Sign Up</a>
+      // <a data-date="11/20/2020" class="descGXP" alt="11938371" href= "javascript://"11938371">Description</a><br><a class="signUpGXP" textmsg="10 SPOTS LEFT" alt="11938371" href="https://www.groupexpro.com/gxp/reservations/start/index/11938371/11/20/2020">Sign Up</a>.
       if (!isset($schedule[9])) {
         continue;
       }
