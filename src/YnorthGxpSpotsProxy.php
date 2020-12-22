@@ -189,11 +189,15 @@ class YnorthGxpSpotsProxy {
     ];
     $queryStr = http_build_query($queryParams);
     $url = self::GXP_ENDPOINT . '?' . $queryStr;
-
-    $response = $this->client->get($url);
-    $body = $response->getBody();
-    $content = $body->getContents();
-
+    try {
+      $response = $this->client->get($url);
+      $body = $response->getBody();
+      $content = $body->getContents();
+    }
+    catch (\Exception $e) {
+      $this->logger->warning('Gxp endpoint not available: %msg', ['%msg' => $e]);
+      return [];
+    }
     // Fix for jsonp format.
     $jsonp = trim($content);
     $jsonp = trim($jsonp, '()');
