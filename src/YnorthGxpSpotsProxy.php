@@ -20,6 +20,8 @@ class YnorthGxpSpotsProxy {
   const GXP_DATE = 0;
   const GXP_TIME = 1;
   const GXP_HTML = 9;
+  const GXP_TITLE = 2;
+  const GXP_LOCATION = 8;
 
   /**
    * Cache ttl.
@@ -93,16 +95,29 @@ class YnorthGxpSpotsProxy {
     $rawData = $this->getSchedules($startTimeStamp, $endTimeStamp);
     $enrichedData = [];
     foreach ($rawData as $schedule) {
-      if (!isset($schedule[self::GXP_HTML]) || !isset($schedule[self::GXP_DATE]) || !isset($schedule[self::GXP_TIME])) {
+      if (!isset($schedule[self::GXP_HTML]) || !isset($schedule[self::GXP_DATE]) || !isset($schedule[self::GXP_TIME]) || !isset($schedule[self::GXP_TITLE]) || !isset($schedule[self::GXP_LOCATION])) {
+        $this->logger->info('Skiped reservation from sync due to unxpected data: %data', [
+          '%data' => serialize($schedule),
+        ]);
         continue;
       }
       $parsedData = $this->parseSchedule((string) $schedule[self::GXP_HTML]);
       if (empty($parsedData)) {
+        // If parse data is empty it means reservations is turned off.
         continue;
       }
       $scheduleTime = explode('-', (string) $schedule[self::GXP_TIME])[0];
       $scheduleDateTime = \DateTime::createFromFormat('l, F j, Y ga', (string) $schedule[self::GXP_DATE] . ' ' . $scheduleTime);
       if (!$scheduleDateTime) {
+        $msg = 'Unexpected date or time format. ';
+        $msg .= 'Reservation sync has been skiped. ';
+        $msg .= 'Please check "%class_title" for "%day" at ';
+        $msg .= 'location "%location" in groupex admin interface.';
+        $this->logger->warning($msg, [
+          '%class_title' => $schedule[self::GXP_TITLE],
+          '%day' => $schedule[self::GXP_DATE],
+          '%location' => $schedule[self::GXP_LOCATION],
+        ]);
         continue;
       }
       $enrichedData[$scheduleDateTime->format('Y-m-d')][] = $parsedData;
