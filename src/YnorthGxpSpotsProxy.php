@@ -100,8 +100,7 @@ class YnorthGxpSpotsProxy {
       if (empty($parsedData)) {
         continue;
       }
-      $scheduleTime = explode('-', (string) $schedule[self::GXP_TIME])[0];
-      $scheduleDateTime = \DateTime::createFromFormat('l, F j, Y ga', (string) $schedule[self::GXP_DATE] . ' ' . $scheduleTime);
+      $scheduleDateTime = \DateTime::createFromFormat('l, F j, Y', (string) $schedule[self::GXP_DATE]);
       $enrichedData[$scheduleDateTime->format('Y-m-d')][] = $parsedData;
     }
 
