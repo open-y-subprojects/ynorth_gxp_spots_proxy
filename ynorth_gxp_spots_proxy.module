@@ -11,7 +11,7 @@
 function ynorth_gxp_spots_proxy_openy_repeat_results_alter(&$results, $request, $date = NULL) {
   $timestamp = $date;
   $date = new \DateTime('now');
-  $date->setTimezone(date_default_timezone_get());
+  $date->setTimezone(new \DateTimeZone(date_default_timezone_get()));
   $date->setTimestamp($timestamp);
   $date = $date->format('Y-m-d');
   $service = \Drupal::service('ynorth_gxp_spots_proxy.week_proxy');
