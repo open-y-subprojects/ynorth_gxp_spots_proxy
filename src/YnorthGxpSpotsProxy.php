@@ -208,7 +208,7 @@ class YnorthGxpSpotsProxy {
     $queryStr = http_build_query($queryParams);
     $url = self::GXP_ENDPOINT . '?' . $queryStr;
     try {
-      $response = $this->client->get($url);
+      $response = $this->client->get($url, ['connect_timeout' => 120, 'timeout' => 120]);
       $body = $response->getBody();
       $content = $body->getContents();
     }
