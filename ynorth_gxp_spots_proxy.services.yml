@@ -15,3 +15,10 @@ services:
       - '@http_client'
       - '@ynorth_gxp_spots_proxy.cache'
       - '@logger.channel.ynorth_gxp_spots_proxy'
+  ynorth_gxp_spots_proxy.syncer:
+    class: Drupal\ymca_sync\Syncer
+    arguments: []
+    calls:
+      - [addStep, ['@ynorth_gxp_spots_proxy.week_proxy', 'sync']]
+    tags:
+      - { name: syncer }

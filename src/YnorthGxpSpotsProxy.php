@@ -74,12 +74,12 @@ class YnorthGxpSpotsProxy {
    * @return array
    *   Return Array of spots.
    */
-  public function getWeekData($timestamp) {
+  public function getWeekData($timestamp, $force = FALSE) {
     $initialDate = new \DateTime('now');
     $initialDate->setTimezone(new \DateTimeZone(date_default_timezone_get()));
     $initialDate->setTimestamp($timestamp);
     $monday = new \DateTime($initialDate->format('Y-m-d') . ' Monday this week');
-    if ($this->cache->get(self::CACHE_NAME . ':' . $monday->format('Y-m-d'))) {
+    if ($this->cache->get(self::CACHE_NAME . ':' . $monday->format('Y-m-d')) && !$force) {
       return $this->cache->get(self::CACHE_NAME . ':' . $monday->format('Y-m-d'))->data;
     }
     $startTime = clone $monday;
@@ -234,6 +234,19 @@ class YnorthGxpSpotsProxy {
     }
     $gxpData = $json["aaData"];
     return $gxpData;
+  }
+
+  /**
+   * Prepare chace with spots for site
+   */
+  public function sync() {
+    $weeksLimit = 2;
+    $date = new \DateTime('now');
+    $date->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+    for ($i = 0; $i < $weeksLimit; $i++) {
+      $this->getWeekData($date->getTimestamp(), TRUE);
+      $date->modify('+1 week');
+    }
   }
 
 }
