@@ -1,0 +1,24 @@
+services:
+  ynorth_gxp_spots_proxy.cache:
+    class: Drupal\Core\Cache\CacheBackendInterface
+    tags:
+      - { name: cache.bin }
+    factory: cache_factory:get
+    arguments:
+      - 'ynorth_gxp_spots_proxy'
+  logger.channel.ynorth_gxp_spots_proxy:
+    parent: logger.channel_base
+    arguments: ['ynorth_gxp_spots_proxy']
+  ynorth_gxp_spots_proxy.week_proxy:
+    class: Drupal\ynorth_gxp_spots_proxy\YnorthGxpSpotsProxy
+    arguments:
+      - '@http_client'
+      - '@ynorth_gxp_spots_proxy.cache'
+      - '@logger.channel.ynorth_gxp_spots_proxy'
+  ynorth_gxp_spots_proxy.syncer:
+    class: Drupal\ymca_sync\Syncer
+    arguments: []
+    calls:
+      - [addStep, ['@ynorth_gxp_spots_proxy.week_proxy', 'sync']]
+    tags:
+      - { name: syncer }

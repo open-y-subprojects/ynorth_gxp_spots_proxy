@@ -1,0 +1,32 @@
+<?php
+
+/**
+ * @file
+ * Main module's file.
+ */
+
+/**
+ * Implements hook_openy_repeat_results_alter().
+ */
+function ynorth_gxp_spots_proxy_openy_repeat_results_alter(&$results, $request, $date = NULL) {
+  $timestamp = $date;
+  $date = new \DateTime('now');
+  $date->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+  $date->setTimestamp($timestamp);
+  $date = $date->format('Y-m-d');
+  $service = \Drupal::service('ynorth_gxp_spots_proxy.week_proxy');
+  $data = $service->getWeekData($timestamp);
+  if (!isset($data[$date])) {
+    return;
+  }
+  foreach ($results as &$schedule) {
+    if (empty($schedule->productid)) {
+      continue;
+    }
+    foreach ($data[$date] as $gxpSpot) {
+      if ($gxpSpot['productid'] == $schedule->productid) {
+        $schedule->spottext = strtolower($gxpSpot["textmsg"]);
+      }
+    }
+  }
+}

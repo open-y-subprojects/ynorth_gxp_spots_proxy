@@ -1,0 +1,16 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - serialization
+    - user
+    - ynorth_gxp_spots_proxy
+id: ynorth_gxp_spots_proxy
+plugin_id: ynorth_gxp_spots_proxy
+granularity: method
+configuration:
+  GET:
+    supported_formats:
+      - json
+    supported_auth:
+      - cookie
