@@ -3,7 +3,7 @@
   "description": "GroupEx PRO Public API Caching proxy for New Schedules application.",
   "type": "drupal-module",
   "require": {
-    "ymcatwincities/openy": "*"
+    "ycloudyusa/yusaopeny": "*"
   },
   "license": "GPL-2.0+",
   "minimum-stability": "dev"
